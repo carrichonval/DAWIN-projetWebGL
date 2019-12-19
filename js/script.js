@@ -25,6 +25,7 @@ const Scene = {
     animate: () => {
         requestAnimationFrame(Scene.animate);
         Scene.vars.raycaster.setFromCamera(Scene.vars.mouse, Scene.vars.camera);
+        /*
         if(Scene.vars.scene.children[5]!=undefined){
             
             var intersects= Scene.vars.raycaster.intersectObjects(Scene.vars.scene.children[5].children,true);
@@ -32,7 +33,7 @@ const Scene = {
             if(intersects.length >0){
                 console.log(Scene.vars.children[5]);
             }
-        }
+        }*/
         
 
         Scene.render();
@@ -60,6 +61,7 @@ const Scene = {
             vars.scene.add(model);
         });*/
 
+        //pas animé
         vars.loaderGLTF.load('./fbx/Zelda/scene.gltf', function(gltf) {
             const model = gltf.scene;
             model.position.set(-1300, -10, 0);
@@ -74,9 +76,15 @@ const Scene = {
             model.position.set(-700, 0, 600);
             model.name = "Junkrat";
             vars[model.name] = gltf;
+            let animation=gltf.animations[0];
+            let mixer = new THREE.AnimationMixer(model);
+            vars.mixers.push(mixer);
+            const action=mixer.clipAction(animation);
+            action.play();
             vars.scene.add(model);
         });
 
+        //pas animé
         vars.loaderGLTF.load('./fbx/zebrus/scene.gltf', function(gltf) {
             const model = gltf.scene;
             model.position.set(0, 1000, 0);
@@ -91,6 +99,11 @@ const Scene = {
             model.scale.set(0.5, 0.5, 0.5);
             model.name = "BlackDragon";
             vars[model.name] = gltf;
+            let animation=gltf.animations[0];
+            let mixer = new THREE.AnimationMixer(model);
+            vars.mixers.push(mixer);
+            const action=mixer.clipAction(animation);
+            action.play();
             vars.scene.add(model);
         });
 
@@ -101,6 +114,11 @@ const Scene = {
             model.scale.set(50, 50, 50);
             model.name = "Crab";
             vars[model.name] = gltf;
+            let animation=gltf.animations[0];
+            let mixer = new THREE.AnimationMixer(model);
+            vars.mixers.push(mixer);
+            const action=mixer.clipAction(animation);
+            action.play();
             vars.scene.add(model);
         });
 
@@ -111,7 +129,6 @@ const Scene = {
             model.scale.set(1, 1, 1);
             model.name = "Phoenix";
             vars[model.name] = gltf;
-
             let animation=gltf.animations[0];
             let mixer = new THREE.AnimationMixer(model);
             vars.mixers.push(mixer);
@@ -130,6 +147,7 @@ const Scene = {
              vars.scene.add(model);
          });*/
 
+         //pas animé
           vars.loaderFBX.load('./fbx/PersonnagePaille.fbx', function(object) {
             object.position.set(1100, 0, 400);
             object.scale.set(500,500,500);
@@ -138,6 +156,7 @@ const Scene = {
             vars.scene.add(object);
          });
 
+         //pas animé
          vars.loaderFBX.load('./fbx/Finger.fbx', function(object) {
             object.position.set(700, 0, 600);
             object.scale.set(2,2,2);
@@ -224,10 +243,33 @@ const Scene = {
         Scene.vars.scene = new THREE.Scene();
         Scene.vars.scene.background = new THREE.Color(0xad1818);
     },
-    update:()=>{
+    animePhoenix:()=>{
         const delta=Scene.vars.clock.getDelta();
         for(const mixer of Scene.vars.mixers){
-            mixer.update(delta);
+            if(mixer._root.name =="Phoenix"){
+                mixer.update(delta);
+            }
+        }
+    },
+    animeCrab:(event)=>{
+        const delta=Scene.vars.clock.getDelta();
+        var keycode=event.which;
+        if(keycode ==32){
+            for(const mixer of Scene.vars.mixers){
+                if(mixer._root.name =="Crab"){
+                    mixer.update(delta);
+                }
+            }
+        }
+        
+    },
+    animationOnMouse:(name)=>{
+        const delta=Scene.vars.clock.getDelta();
+
+        for(const mixer of Scene.vars.mixers){
+            if(mixer._root.name == name){
+                mixer.update(delta);
+            }
         }
     },
     moteurRendu:()=>{
@@ -260,7 +302,7 @@ const Scene = {
         Scene.addStats();
 
         Scene.vars.renderer.setAnimationLoop( ()=>{
-            Scene.update();
+            Scene.animePhoenix();
             Scene.render();
         })
         
@@ -269,6 +311,7 @@ const Scene = {
         window.addEventListener('resize', Scene.onWindowResize, false);
         window.addEventListener('mousemove', Scene.onMouseMove, false);
         window.requestAnimationFrame(Scene.animate);
+        window.addEventListener('keydown',Scene.animeCrab,false);
         Scene.animate();
     }
 };
