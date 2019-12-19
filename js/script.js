@@ -30,13 +30,11 @@ const Scene = {
 
         if (intersects.length > 0) {
             for (let obj of intersects) {
-                console.log(obj.object.parent.name)
                 if (obj.object.parent.name == "g") {
                     Scene.animeDragon();
                 }
             }
         }
-
         Scene.render();
     },
     render: () => {
@@ -255,7 +253,6 @@ const Scene = {
     animeDragon: () => {
         const delta = Scene.vars.clock.getDelta();
         for (const mixer of Scene.vars.mixers) {
-            console.log(mixer)
             if (mixer._root.name == "BlackDragon") {
                 mixer.update(delta);
             }
@@ -328,7 +325,6 @@ const Scene = {
     },
     animationOnMouse: (name) => {
         const delta = Scene.vars.clock.getDelta();
-
         for (const mixer of Scene.vars.mixers) {
             if (mixer._root.name == name) {
                 mixer.update(delta);
@@ -369,7 +365,7 @@ const Scene = {
             Scene.render();
         })
 
-        console.log(Scene.vars)
+        //console.log(Scene.vars)
 
         window.addEventListener('resize', Scene.onWindowResize, false);
         window.addEventListener('mousemove', Scene.onMouseMove, false);
