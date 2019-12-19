@@ -19,22 +19,21 @@ const Scene = {
         animPercent: 0.00,
         loaderFBX: new FBXLoader(),
         loaderGLTF:new GLTFLoader(),
-        mixer:null
+        mixers:[],
+        clock:new THREE.Clock()
     },
     animate: () => {
         requestAnimationFrame(Scene.animate);
         Scene.vars.raycaster.setFromCamera(Scene.vars.mouse, Scene.vars.camera);
-
-        if (Scene.vars.goldGroup !== undefined) {
-            let intersects = Scene.vars.raycaster.intersectObjects(Scene.vars.goldGroup.children, true);
-
-            if (intersects.length > 0) {
-                Scene.vars.animSpeed = 0.05;
-            } else {
-                Scene.vars.animSpeed = -0.05;
+        if(Scene.vars.scene.children[5]!=undefined){
+            
+            var intersects= Scene.vars.raycaster.intersectObjects(Scene.vars.scene.children[5].children,true);
+            
+            if(intersects.length >0){
+                console.log(Scene.vars.children[5]);
             }
-
         }
+        
 
         Scene.render();
     },
@@ -112,6 +111,13 @@ const Scene = {
             model.scale.set(1, 1, 1);
             model.name = "Phoenix";
             vars[model.name] = gltf;
+
+            let animation=gltf.animations[0];
+            let mixer = new THREE.AnimationMixer(model);
+            vars.mixers.push(mixer);
+            const action=mixer.clipAction(animation);
+            action.play();
+
             vars.scene.add(model);
         });
 
@@ -138,6 +144,9 @@ const Scene = {
             object.name="Finger";
             vars.scene.add(object);
          });
+    },
+    testClick:()=>{
+        console.log('test')
     },
     addLights:()=>{
         let vars = Scene.vars;
@@ -215,6 +224,12 @@ const Scene = {
         Scene.vars.scene = new THREE.Scene();
         Scene.vars.scene.background = new THREE.Color(0xad1818);
     },
+    update:()=>{
+        const delta=Scene.vars.clock.getDelta();
+        for(const mixer of Scene.vars.mixers){
+            mixer.update(delta);
+        }
+    },
     moteurRendu:()=>{
         // paramétrage du moteur de rendu
         Scene.vars.renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -243,12 +258,17 @@ const Scene = {
         Scene.addControls();
         Scene.loadObject();
         Scene.addStats();
+
+        Scene.vars.renderer.setAnimationLoop( ()=>{
+            Scene.update();
+            Scene.render();
+        })
         
         console.log(Scene.vars)
 
         window.addEventListener('resize', Scene.onWindowResize, false);
         window.addEventListener('mousemove', Scene.onMouseMove, false);
-
+        window.requestAnimationFrame(Scene.animate);
         Scene.animate();
     }
 };
