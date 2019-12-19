@@ -18,9 +18,9 @@ const Scene = {
         animSpeed: null,
         animPercent: 0.00,
         loaderFBX: new FBXLoader(),
-        loaderGLTF:new GLTFLoader(),
-        mixers:[],
-        clock:new THREE.Clock()
+        loaderGLTF: new GLTFLoader(),
+        mixers: [],
+        clock: new THREE.Clock()
     },
     animate: () => {
         requestAnimationFrame(Scene.animate);
@@ -34,7 +34,7 @@ const Scene = {
                 console.log(Scene.vars.children[5]);
             }
         }*/
-        
+
 
         Scene.render();
     },
@@ -51,7 +51,7 @@ const Scene = {
         Scene.vars.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
         Scene.vars.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
     },
-    loadObject:()=>{
+    loadObject: () => {
         let vars = Scene.vars;
 
         /*fbxloader.load('./fbx/Letter/A.fbx', function(model) {
@@ -76,10 +76,10 @@ const Scene = {
             model.position.set(-700, 0, 600);
             model.name = "Junkrat";
             vars[model.name] = gltf;
-            let animation=gltf.animations[0];
+            let animation = gltf.animations[0];
             let mixer = new THREE.AnimationMixer(model);
             vars.mixers.push(mixer);
-            const action=mixer.clipAction(animation);
+            const action = mixer.clipAction(animation);
             action.play();
             vars.scene.add(model);
         });
@@ -99,10 +99,10 @@ const Scene = {
             model.scale.set(0.5, 0.5, 0.5);
             model.name = "BlackDragon";
             vars[model.name] = gltf;
-            let animation=gltf.animations[0];
+            let animation = gltf.animations[0];
             let mixer = new THREE.AnimationMixer(model);
             vars.mixers.push(mixer);
-            const action=mixer.clipAction(animation);
+            const action = mixer.clipAction(animation);
             action.play();
             vars.scene.add(model);
         });
@@ -114,10 +114,10 @@ const Scene = {
             model.scale.set(50, 50, 50);
             model.name = "Crab";
             vars[model.name] = gltf;
-            let animation=gltf.animations[0];
+            let animation = gltf.animations[0];
             let mixer = new THREE.AnimationMixer(model);
             vars.mixers.push(mixer);
-            const action=mixer.clipAction(animation);
+            const action = mixer.clipAction(animation);
             action.play();
             vars.scene.add(model);
         });
@@ -129,10 +129,10 @@ const Scene = {
             model.scale.set(1, 1, 1);
             model.name = "Phoenix";
             vars[model.name] = gltf;
-            let animation=gltf.animations[0];
+            let animation = gltf.animations[0];
             let mixer = new THREE.AnimationMixer(model);
             vars.mixers.push(mixer);
-            const action=mixer.clipAction(animation);
+            const action = mixer.clipAction(animation);
             action.play();
 
             vars.scene.add(model);
@@ -147,27 +147,27 @@ const Scene = {
              vars.scene.add(model);
          });*/
 
-         //pas animé
-          vars.loaderFBX.load('./fbx/PersonnagePaille.fbx', function(object) {
+        //pas animé
+        vars.loaderFBX.load('./fbx/PersonnagePaille.fbx', function(object) {
             object.position.set(1100, 0, 400);
-            object.scale.set(500,500,500);
-            object.rotation.y=Math.PI;
-            object.name="PersonnagePaille";
+            object.scale.set(500, 500, 500);
+            object.rotation.y = Math.PI;
+            object.name = "PersonnagePaille";
             vars.scene.add(object);
-         });
+        });
 
-         //pas animé
-         vars.loaderFBX.load('./fbx/Finger.fbx', function(object) {
+        //pas animé
+        vars.loaderFBX.load('./fbx/Finger.fbx', function(object) {
             object.position.set(700, 0, 600);
-            object.scale.set(2,2,2);
-            object.name="Finger";
+            object.scale.set(2, 2, 2);
+            object.name = "Finger";
             vars.scene.add(object);
-         });
+        });
     },
-    testClick:()=>{
+    testClick: () => {
         console.log('test')
     },
-    addLights:()=>{
+    addLights: () => {
         let vars = Scene.vars;
 
         // ajout de la lumière
@@ -221,7 +221,7 @@ const Scene = {
         // let helper3 = new THREE.DirectionalLightHelper(light3, 5);
         // vars.scene.add(helper3);
     },
-    addControls:()=>{
+    addControls: () => {
         // ajout des controles
         Scene.vars.controls = new OrbitControls(Scene.vars.camera, Scene.vars.renderer.domElement);
         //vars.controls.minDistance = 300;
@@ -233,7 +233,7 @@ const Scene = {
         Scene.vars.controls.target.set(0, 100, 0);
         Scene.vars.controls.update();
     },
-    addScene:()=>{
+    addScene: () => {
         // Préparer le container pour la scène
         Scene.vars.container = document.createElement('div');
         Scene.vars.container.classList.add('fullscreen');
@@ -243,36 +243,89 @@ const Scene = {
         Scene.vars.scene = new THREE.Scene();
         Scene.vars.scene.background = new THREE.Color(0xad1818);
     },
-    animePhoenix:()=>{
-        const delta=Scene.vars.clock.getDelta();
-        for(const mixer of Scene.vars.mixers){
-            if(mixer._root.name =="Phoenix"){
+    animePhoenix: () => {
+        const delta = Scene.vars.clock.getDelta();
+        for (const mixer of Scene.vars.mixers) {
+            if (mixer._root.name == "Phoenix" || mixer._root.name == "Junkrat") {
                 mixer.update(delta);
             }
         }
     },
-    animeCrab:(event)=>{
-        const delta=Scene.vars.clock.getDelta();
-        var keycode=event.which;
-        if(keycode ==32){
-            for(const mixer of Scene.vars.mixers){
-                if(mixer._root.name =="Crab"){
+    animeKeydown: (event) => {
+        const delta = Scene.vars.clock.getDelta();
+        var keycode = event.which;
+        //faire bouger le crabe
+        if (keycode == 32) {
+            for (const mixer of Scene.vars.mixers) {
+                if (mixer._root.name == "Crab") {
                     mixer.update(delta);
                 }
             }
         }
-        
-    },
-    animationOnMouse:(name)=>{
-        const delta=Scene.vars.clock.getDelta();
+        //deplacer persos en arriere
+        if (keycode == 90) {
+            for (let children of Scene.vars.scene.children) {
+                if (children.name == "PersonnagePaille") {
+                    children.position.z -= 20;
+                }
+            }
+        }
+        //deplacer persos en avant
+        if (keycode == 83) {
+            for (let children of Scene.vars.scene.children) {
+                if (children.name == "PersonnagePaille") {
+                    children.position.z += 20;
+                }
+            }
+        }
+        //deplacer persos a gauche
+        if (keycode == 81) {
+            for (let children of Scene.vars.scene.children) {
+                if (children.name == "PersonnagePaille") {
+                    children.position.x -= 20;
+                }
+            }
+        }
+        //deplacer persos a droite
+        if (keycode == 68) {
+            for (let children of Scene.vars.scene.children) {
+                if (children.name == "PersonnagePaille") {
+                    children.position.x += 20;
+                }
+            }
+        }
+        //agrandir le persos
+        if (keycode == 65) {
+            for (let children of Scene.vars.scene.children) {
+                if (children.name == "PersonnagePaille") {
+                    children.scale.x += 2;
+                    children.scale.y += 2;
+                    children.scale.z += 2;
+                }
+            }
+        }
+        //Retrecir le persos
+        if (keycode == 69) {
+            for (let children of Scene.vars.scene.children) {
+                if (children.name == "PersonnagePaille") {
+                    children.scale.x -= 2;
+                    children.scale.y -= 2;
+                    children.scale.z -= 2;
+                }
+            }
+        }
 
-        for(const mixer of Scene.vars.mixers){
-            if(mixer._root.name == name){
+    },
+    animationOnMouse: (name) => {
+        const delta = Scene.vars.clock.getDelta();
+
+        for (const mixer of Scene.vars.mixers) {
+            if (mixer._root.name == name) {
                 mixer.update(delta);
             }
         }
     },
-    moteurRendu:()=>{
+    moteurRendu: () => {
         // paramétrage du moteur de rendu
         Scene.vars.renderer = new THREE.WebGLRenderer({ antialias: true });
         Scene.vars.renderer.setPixelRatio(window.devicePixelRatio);
@@ -283,12 +336,12 @@ const Scene = {
 
         Scene.vars.container.appendChild(Scene.vars.renderer.domElement);
     },
-    addCamera:()=>{
+    addCamera: () => {
         // ajout de la caméra
         Scene.vars.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 30000);
         Scene.vars.camera.position.set(0, 1400, 4000);
     },
-    addStats:()=>{
+    addStats: () => {
         Scene.vars.stats = new Stats();
         Scene.vars.container.appendChild(Scene.vars.stats.dom);
     },
@@ -301,17 +354,17 @@ const Scene = {
         Scene.loadObject();
         Scene.addStats();
 
-        Scene.vars.renderer.setAnimationLoop( ()=>{
+        Scene.vars.renderer.setAnimationLoop(() => {
             Scene.animePhoenix();
             Scene.render();
         })
-        
+
         console.log(Scene.vars)
 
         window.addEventListener('resize', Scene.onWindowResize, false);
         window.addEventListener('mousemove', Scene.onMouseMove, false);
-        window.requestAnimationFrame(Scene.animate);
-        window.addEventListener('keydown',Scene.animeCrab,false);
+
+        window.addEventListener('keydown', Scene.animeKeydown, false);
         Scene.animate();
     }
 };
