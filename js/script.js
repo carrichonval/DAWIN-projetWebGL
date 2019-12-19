@@ -25,16 +25,17 @@ const Scene = {
     animate: () => {
         requestAnimationFrame(Scene.animate);
         Scene.vars.raycaster.setFromCamera(Scene.vars.mouse, Scene.vars.camera);
-        /*
-        if(Scene.vars.scene.children[5]!=undefined){
-            
-            var intersects= Scene.vars.raycaster.intersectObjects(Scene.vars.scene.children[5].children,true);
-            
-            if(intersects.length >0){
-                console.log(Scene.vars.children[5]);
-            }
-        }*/
 
+        var intersects = Scene.vars.raycaster.intersectObjects(Scene.vars.scene.children, true);
+
+        if (intersects.length > 0) {
+            for (let obj of intersects) {
+                console.log(obj.object.parent.name)
+                if (obj.object.parent.name == "g") {
+                    Scene.animeDragon();
+                }
+            }
+        }
 
         Scene.render();
     },
@@ -224,8 +225,8 @@ const Scene = {
     addControls: () => {
         // ajout des controles
         Scene.vars.controls = new OrbitControls(Scene.vars.camera, Scene.vars.renderer.domElement);
-        //vars.controls.minDistance = 300;
-        //vars.controls.maxDistance = 600;
+        Scene.vars.controls.minDistance = 300;
+        Scene.vars.controls.maxDistance = 4500;
         //vars.controls.minPolarAngle = Math.PI / 2;
         Scene.vars.controls.maxPolarAngle = Math.PI / 2;
         Scene.vars.controls.minAzimuthAngle = -Math.PI / 2;
@@ -247,6 +248,15 @@ const Scene = {
         const delta = Scene.vars.clock.getDelta();
         for (const mixer of Scene.vars.mixers) {
             if (mixer._root.name == "Phoenix" || mixer._root.name == "Junkrat") {
+                mixer.update(delta);
+            }
+        }
+    },
+    animeDragon: () => {
+        const delta = Scene.vars.clock.getDelta();
+        for (const mixer of Scene.vars.mixers) {
+            console.log(mixer)
+            if (mixer._root.name == "BlackDragon") {
                 mixer.update(delta);
             }
         }
