@@ -88,8 +88,8 @@ const Scene = {
         //pas animé
         vars.loaderGLTF.load('./fbx/zebrus/scene.gltf', function(gltf) {
             const model = gltf.scene;
-            model.position.set(0, 1000, 0);
-            model.scale.set(250, 250, 250);
+            model.position.set(0, 1200, 0);
+            model.scale.set(300, 300, 300);
             model.name = "Zebrus";
             vars[model.name] = gltf;
             vars.scene.add(model);
