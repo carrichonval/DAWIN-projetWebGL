@@ -2,6 +2,7 @@ import * as THREE from '../vendor/three.js-master/build/three.module.js';
 import Stats from '../vendor/three.js-master/examples/jsm/libs/stats.module.js';
 import { OrbitControls } from '../vendor/three.js-master/examples/jsm/controls/OrbitControls.js';
 import { FBXLoader } from '../vendor/three.js-master/examples/jsm/loaders/FBXLoader.js';
+import { GLTFLoader } from '../vendor/three.js-master/examples/jsm/loaders/GLTFLoader.js';
 
 const Scene = {
     vars: {
@@ -16,7 +17,6 @@ const Scene = {
         raycaster: new THREE.Raycaster(),
         animSpeed: null,
         animPercent: 0.00,
-        text: "DAWIN"
     },
     animate: () => {
         requestAnimationFrame(Scene.animate);
@@ -44,6 +44,10 @@ const Scene = {
         vars.camera.aspect = window.innerWidth / window.innerHeight;
         vars.camera.updateProjectionMatrix();
         vars.renderer.setSize(window.innerWidth, window.innerHeight);
+    },
+    onMouseMove: (event) => {
+        Scene.vars.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+        Scene.vars.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
     },
     loadFBX: (file, scale, position, rotation, namespace, callback) => {
         let vars = Scene.vars;
@@ -90,7 +94,7 @@ const Scene = {
         // ajout de la scène
         vars.scene = new THREE.Scene();
         vars.scene.background = new THREE.Color(0xa0a0a0);
-        vars.scene.fog = new THREE.Fog(vars.scene.background, 20000, 20000);
+        vars.scene.fog = new THREE.Fog(vars.scene.background, 100000, 100000);
 
         // paramétrage du moteur de rendu
         vars.renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -104,7 +108,7 @@ const Scene = {
 
         // ajout de la caméra
         vars.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 30000);
-        vars.camera.position.set(2000, 1000, 2000);
+        vars.camera.position.set(0, 1400, 4000);
 
         // ajout de la lumière
         const lightIntensityHemisphere = .5;
@@ -157,72 +161,118 @@ const Scene = {
         // let helper3 = new THREE.DirectionalLightHelper(light3, 5);
         // vars.scene.add(helper3);
 
-        // ajout du sol
-        let mesh = new THREE.Mesh(
-            new THREE.PlaneBufferGeometry(6000, 6000),
-            new THREE.MeshLambertMaterial({ color: new THREE.Color(0x888888) })
-        );
-        mesh.traverse((child) => {
-            child.material = new THREE.MeshBasicMaterial({
-                map: new THREE.TextureLoader().load('./texture/marbre.jpg')
-            });
+
+
+
+
+        let mixer;
+
+        const loader = new GLTFLoader();
+        const fbxloader = new FBXLoader();
+
+        /*fbxloader.load('./fbx/Letter/A.fbx', function(model) {
+            model.position.set(0, 0, 1500);
+            model.scale.set(3, 3, 3);
+            //console.log(gltf)
+            vars.scene.add(model);
+        });*/
+
+
+
+        loader.load('./fbx/Zelda/scene.gltf', function(gltf) {
+            const model = gltf.scene;
+            model.position.set(-1300, -10, 0);
+            model.scale.set(3, 3, 3);
+            model.name = "Zelda";
+            Scene.vars[model.name] = gltf;
+            //console.log(gltf)
+            vars.scene.add(model);
         });
-        mesh.rotation.x = -Math.PI / 2;
-        mesh.receiveShadow = false;
-        vars.scene.add(mesh);
 
-        let planeMaterial = new THREE.ShadowMaterial();
-        planeMaterial.opacity = 0.07;
-        let shadowPlane = new THREE.Mesh(
-            new THREE.PlaneBufferGeometry(2000, 2000),
-            planeMaterial);
-        shadowPlane.rotation.x = -Math.PI / 2;
-        shadowPlane.receiveShadow = true;
+        loader.load('./fbx/Junkrat/scene.gltf', function(gltf) {
+            const model = gltf.scene;
+            model.position.set(-700, 0, 600);
+            model.name = "Junkrat";
+            Scene.vars[model.name] = gltf;
+            //console.log(gltf)
+            vars.scene.add(model);
+        });
 
-        vars.scene.add(shadowPlane);
+        loader.load('./fbx/zebrus/scene.gltf', function(gltf) {
+            const model = gltf.scene;
+            model.position.set(0, 1000, 0);
+            model.scale.set(250, 250, 250);
+            model.name = "Zebrus";
+            Scene.vars[model.name] = gltf;
+            //console.log(gltf)
+            vars.scene.add(model);
+        });
+
+        loader.load('./fbx/BlackDragon/scene.gltf', function(gltf) {
+            const model = gltf.scene;
+            model.scale.set(0.5, 0.5, 0.5);
+            model.name = "BlackDragon";
+            Scene.vars[model.name] = gltf;
+            //console.log(gltf)
+            vars.scene.add(model);
+        });
+
+        loader.load('./fbx/Crab/scene.gltf', function(gltf) {
+            const model = gltf.scene;
+            model.position.set(0, 200, 1000);
+            model.rotation.y = Math.PI;
+            model.scale.set(50, 50, 50);
+            model.name = "Crab";
+            Scene.vars[model.name] = gltf;
+            //console.log(gltf)
+            vars.scene.add(model);
+        });
 
 
-        let hash = document.location.hash.substr(1);
-        if (hash.length !== 0) {
-            let text = hash.substring();
-            Scene.vars.text = decodeURI(text);
-        }
+        loader.load('./fbx/Phoenix/scene.gltf', function(gltf) {
+            const model = gltf.scene;
+            model.position.set(800, 450, 200);
+            model.rotation.y = -Math.PI / 2;
+            model.scale.set(1, 1, 1);
+            model.name = "Phoenix";
+            Scene.vars[model.name] = gltf;
+            //console.log(gltf)
+            vars.scene.add(model);
+        });
 
-        /*
-                var loader = new FBXLoader();
-                var textureLoader = new THREE.TextureLoader();
-                var map = textureLoader.load('./texture/f_med_scarecrow_backpack.png');
-                var map1 = textureLoader.load('./texture/f_med_scarecrow_head.png');
-                var map2 = textureLoader.load('./texture/f_med_scarecrow.png');
-                var materials = [new THREE.MeshPhongMaterial({ map: map }),
-                    new THREE.MeshPhongMaterial({ map: map1 }),
-                    new THREE.MeshPhongMaterial({ map: map2 })
-                ];
-
-                
-                        loader.load('./fbx/chala.fbx', function(object3d) {
-                            // For any meshes in the model, add our material.
-                            object3d.traverse(function(node) {
-
-                                if (node.isMesh) node.material = materials;
-
-                            });
-                            object3d.position.set(0, 0, 0);
-                            object3d.scale.set(500, 500, 500)
-                            console.log(object3d)
-                            vars.scene.add(object3d);
-                        });*/
-
+        /* loader.load('./fbx/LetterA.glb', function(gltf) {
+             const model = gltf.scene;
+             model.position.set(-300, 200, 1500);
+             model.scale.set(1, 1, 1);
+             Scene.vars[model.name] = gltf;
+             //console.log(gltf)
+             vars.scene.add(model);
+         });*/
 
 
         Scene.loadFBX("PersonnagePaille.fbx", 500, [0, 0, 0], [0, 0, 0], 'PersonnagePaille', () => {
-            let vars = Scene.vars;
-            let PersonnagePaille = new THREE.Group();
-            PersonnagePaille.add(vars.PersonnagePaille);
-            PersonnagePaille.position.set(0, 0, 0);
-            PersonnagePaille.rotation.y = Math.PI;
-            vars.scene.add(PersonnagePaille);
+            Scene.loadFBX("Finger.fbx", 2, [0, 0, 0], [0, 0, 0], 'Finger', () => {
+
+                let vars = Scene.vars;
+
+                let PersonnagePaille = new THREE.Group();
+                PersonnagePaille.add(vars.PersonnagePaille);
+                PersonnagePaille.position.set(1100, 0, 400);
+                PersonnagePaille.rotation.y = Math.PI;
+                PersonnagePaille.name = "PersonnagePaille"
+                    //console.log(PersonnagePaille)
+                vars.scene.add(PersonnagePaille);
+
+                let Finger = new THREE.Group();
+                Finger.add(vars.Finger);
+                Finger.position.set(700, 0, 600);
+                Finger.name = "Finger";
+                //console.log(Finger)
+                vars.scene.add(Finger);
+
+            });
         });
+        console.log(Scene.vars)
 
 
         // ajout des controles
@@ -237,6 +287,7 @@ const Scene = {
         vars.controls.update();
 
         window.addEventListener('resize', Scene.onWindowResize, false);
+        window.addEventListener('mousemove', Scene.onMouseMove, false);
 
         vars.stats = new Stats();
         vars.container.appendChild(vars.stats.dom);
