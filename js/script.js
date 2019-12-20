@@ -86,8 +86,8 @@ const Scene = {
         vars.loaderGLTF.load('./fbx/Destruction/scene.gltf', function(gltf) {
             const model = gltf.scene;
             model.position.set(1300, 231, 1000);
-            model.scale.set(30, 30,30);
-            model.rotation.y = Math.PI/2;
+            model.scale.set(30, 30, 30);
+            model.rotation.y = Math.PI / 2;
             model.name = "Destruction";
             vars[model.name] = gltf;
             let animation = gltf.animations[0];
@@ -95,7 +95,7 @@ const Scene = {
             vars.mixers.push(mixer);
             const action = mixer.clipAction(animation);
             action.setLoop(THREE.LoopOnce);
-            action.clampWhenFinished =true;
+            action.clampWhenFinished = true;
             action.play();
             vars.scene.add(model);
         });
@@ -122,19 +122,6 @@ const Scene = {
             vars.scene.add(model);
         });
 
-        vars.loaderGLTF.load('./fbx/SolarSystem/scene.gltf', function(gltf) {
-            const model = gltf.scene;
-            model.position.set(0, 1700, 0);
-            model.scale.set(30, 30,30 );
-            model.name = "SolarSystem";
-            vars[model.name] = gltf;
-            let animation = gltf.animations[0];
-            let mixer = new THREE.AnimationMixer(model);
-            vars.mixers.push(mixer);
-            const action = mixer.clipAction(animation);
-            action.play();
-            vars.scene.add(model);
-        });
 
         vars.loaderGLTF.load('./fbx/Crab/scene.gltf', function(gltf) {
             const model = gltf.scene;
@@ -275,7 +262,7 @@ const Scene = {
     animeLoop: () => {
         const delta = Scene.vars.clock.getDelta();
         for (const mixer of Scene.vars.mixers) {
-            if (mixer._root.name == "Phoenix" || mixer._root.name == "Junkrat" || mixer._root.name == "Crab" || mixer._root.name == "SolarSystem") {
+            if (mixer._root.name == "Phoenix" || mixer._root.name == "Junkrat" || mixer._root.name == "Crab") {
                 mixer.update(delta);
             }
         }
@@ -289,7 +276,7 @@ const Scene = {
         }
     },
     animeKeydown: (event) => {
-        
+
         const delta = Scene.vars.clock.getDelta();
         var keycode = event.which;
         //faire bouger le crabe
