@@ -83,12 +83,28 @@ const Scene = {
             vars.scene.add(model);
         });
 
+        vars.loaderGLTF.load('./fbx/Destruction/scene.gltf', function(gltf) {
+            const model = gltf.scene;
+            model.position.set(1300, 231, 1000);
+            model.scale.set(30, 30,30);
+            model.rotation.y = Math.PI/2;
+            model.name = "Destruction";
+            vars[model.name] = gltf;
+            let animation = gltf.animations[0];
+            let mixer = new THREE.AnimationMixer(model);
+            vars.mixers.push(mixer);
+            const action = mixer.clipAction(animation);
+            action.setLoop(THREE.LoopOnce);
+            action.clampWhenFinished =true;
+            action.play();
+            vars.scene.add(model);
+        });
+
         //pas animé
         vars.loaderGLTF.load('./fbx/zebrus/scene.gltf', function(gltf) {
             const model = gltf.scene;
             model.position.set(0, 1200, 0);
             model.scale.set(300, 300, 300);
-            model.name = "Zebrus";
             vars[model.name] = gltf;
             vars.scene.add(model);
         });
@@ -97,6 +113,20 @@ const Scene = {
             const model = gltf.scene;
             model.scale.set(0.5, 0.5, 0.5);
             model.name = "BlackDragon";
+            vars[model.name] = gltf;
+            let animation = gltf.animations[0];
+            let mixer = new THREE.AnimationMixer(model);
+            vars.mixers.push(mixer);
+            const action = mixer.clipAction(animation);
+            action.play();
+            vars.scene.add(model);
+        });
+
+        vars.loaderGLTF.load('./fbx/SolarSystem/scene.gltf', function(gltf) {
+            const model = gltf.scene;
+            model.position.set(0, 1700, 0);
+            model.scale.set(30, 30,30 );
+            model.name = "SolarSystem";
             vars[model.name] = gltf;
             let animation = gltf.animations[0];
             let mixer = new THREE.AnimationMixer(model);
@@ -224,7 +254,7 @@ const Scene = {
         // ajout des controles
         Scene.vars.controls = new OrbitControls(Scene.vars.camera, Scene.vars.renderer.domElement);
         Scene.vars.controls.minDistance = 300;
-        Scene.vars.controls.maxDistance = 4500;
+        Scene.vars.controls.maxDistance = 6000;
         //vars.controls.minPolarAngle = Math.PI / 2;
         Scene.vars.controls.maxPolarAngle = Math.PI / 2;
         Scene.vars.controls.minAzimuthAngle = -Math.PI / 2;
@@ -242,10 +272,10 @@ const Scene = {
         Scene.vars.scene = new THREE.Scene();
         Scene.vars.scene.background = new THREE.Color(0xad1818);
     },
-    animePhoenix: () => {
+    animeLoop: () => {
         const delta = Scene.vars.clock.getDelta();
         for (const mixer of Scene.vars.mixers) {
-            if (mixer._root.name == "Phoenix" || mixer._root.name == "Junkrat") {
+            if (mixer._root.name == "Phoenix" || mixer._root.name == "Junkrat" || mixer._root.name == "Crab" || mixer._root.name == "SolarSystem") {
                 mixer.update(delta);
             }
         }
@@ -259,12 +289,13 @@ const Scene = {
         }
     },
     animeKeydown: (event) => {
+        
         const delta = Scene.vars.clock.getDelta();
         var keycode = event.which;
         //faire bouger le crabe
         if (keycode == 32) {
             for (const mixer of Scene.vars.mixers) {
-                if (mixer._root.name == "Crab") {
+                if (mixer._root.name == "Destruction") {
                     mixer.update(delta);
                 }
             }
@@ -361,11 +392,10 @@ const Scene = {
         Scene.addStats();
 
         Scene.vars.renderer.setAnimationLoop(() => {
-            Scene.animePhoenix();
+            Scene.animeLoop();
             Scene.render();
         })
 
-        //console.log(Scene.vars)
 
         window.addEventListener('resize', Scene.onWindowResize, false);
         window.addEventListener('mousemove', Scene.onMouseMove, false);
