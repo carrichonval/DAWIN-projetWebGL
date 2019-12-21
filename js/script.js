@@ -30,6 +30,7 @@ const Scene = {
 
         if (intersects.length > 0) {
             for (let obj of intersects) {
+                //si lobjet croisé est le cavalier
                 if (obj.object.parent.name == "g") {
                     Scene.animeDragon();
                 }
@@ -154,14 +155,13 @@ const Scene = {
             vars.scene.add(model);
         });
 
-        /* vars.loaderGLTF.load('./fbx/LetterA.glb', function(gltf) {
-             const model = gltf.scene;
-             model.position.set(-300, 200, 1500);
-             model.scale.set(1, 1, 1);
-             Scene.vars[model.name] = gltf;
-             //console.log(gltf)
-             vars.scene.add(model);
-         });*/
+        vars.loaderGLTF.load('./fbx/Avengers.glb ', function(gltf) {
+            const model = gltf.scene;
+            model.position.set(-350, 50, 1500);
+            model.scale.set(100, 100, 100);
+            Scene.vars[model.name] = gltf;
+            vars.scene.add(model);
+        });
 
         //pas animé
         vars.loaderFBX.load('./fbx/PersonnagePaille.fbx', function(object) {
@@ -179,9 +179,6 @@ const Scene = {
             object.name = "Finger";
             vars.scene.add(object);
         });
-    },
-    testClick: () => {
-        console.log('test')
     },
     addLights: () => {
         let vars = Scene.vars;
@@ -206,8 +203,7 @@ const Scene = {
         light1.shadow.mapSize.width = 4096;
         light1.shadow.mapSize.height = 4096;
         vars.scene.add(light1);
-        // let helper = new THREE.DirectionalLightHelper(light1, 5);
-        // vars.scene.add(helper);
+
 
         let light2 = new THREE.DirectionalLight(0xFFFFFF, lightIntensity);
         light2.position.set(-400, 200, 400);
@@ -220,8 +216,7 @@ const Scene = {
         light2.shadow.mapSize.width = 4096;
         light2.shadow.mapSize.height = 4096;
         vars.scene.add(light2);
-        // let helper2 = new THREE.DirectionalLightHelper(light2, 5);
-        // vars.scene.add(helper2);
+
 
         let light3 = new THREE.DirectionalLight(0xFFFFFF, lightIntensity);
         light3.position.set(400, 200, 400);
@@ -234,8 +229,7 @@ const Scene = {
         light3.shadow.mapSize.width = 4096;
         light3.shadow.mapSize.height = 4096;
         vars.scene.add(light3);
-        // let helper3 = new THREE.DirectionalLightHelper(light3, 5);
-        // vars.scene.add(helper3);
+
     },
     addControls: () => {
         // ajout des controles
@@ -287,57 +281,60 @@ const Scene = {
                 }
             }
         }
-        //deplacer persos en arriere
-        if (keycode == 90) {
-            for (let children of Scene.vars.scene.children) {
-                if (children.name == "PersonnagePaille") {
-                    children.position.z -= 20;
+
+        switch (keycode) {
+            //deplacer persos arriere
+            case 90:
+                for (let children of Scene.vars.scene.children) {
+                    if (children.name == "PersonnagePaille") {
+                        children.position.z -= 20;
+                    }
                 }
-            }
-        }
-        //deplacer persos en avant
-        if (keycode == 83) {
-            for (let children of Scene.vars.scene.children) {
-                if (children.name == "PersonnagePaille") {
-                    children.position.z += 20;
+                break;
+                //deplacer persos avant
+            case 83:
+                for (let children of Scene.vars.scene.children) {
+                    if (children.name == "PersonnagePaille") {
+                        children.position.z += 20;
+                    }
                 }
-            }
-        }
-        //deplacer persos a gauche
-        if (keycode == 81) {
-            for (let children of Scene.vars.scene.children) {
-                if (children.name == "PersonnagePaille") {
-                    children.position.x -= 20;
+                break;
+                //deplacer persos a gauche
+            case 81:
+                for (let children of Scene.vars.scene.children) {
+                    if (children.name == "PersonnagePaille") {
+                        children.position.x -= 20;
+                    }
                 }
-            }
-        }
-        //deplacer persos a droite
-        if (keycode == 68) {
-            for (let children of Scene.vars.scene.children) {
-                if (children.name == "PersonnagePaille") {
-                    children.position.x += 20;
+                break;
+                //depalcer persos a droite
+            case 68:
+                for (let children of Scene.vars.scene.children) {
+                    if (children.name == "PersonnagePaille") {
+                        children.position.x += 20;
+                    }
                 }
-            }
-        }
-        //agrandir le persos
-        if (keycode == 65) {
-            for (let children of Scene.vars.scene.children) {
-                if (children.name == "PersonnagePaille") {
-                    children.scale.x += 2;
-                    children.scale.y += 2;
-                    children.scale.z += 2;
+                break;
+                //agrandir persos
+            case 65:
+                for (let children of Scene.vars.scene.children) {
+                    if (children.name == "PersonnagePaille") {
+                        children.scale.x += 2;
+                        children.scale.y += 2;
+                        children.scale.z += 2;
+                    }
                 }
-            }
-        }
-        //Retrecir le persos
-        if (keycode == 69) {
-            for (let children of Scene.vars.scene.children) {
-                if (children.name == "PersonnagePaille") {
-                    children.scale.x -= 2;
-                    children.scale.y -= 2;
-                    children.scale.z -= 2;
+                break;
+                //retrecir persos
+            case 69:
+                for (let children of Scene.vars.scene.children) {
+                    if (children.name == "PersonnagePaille") {
+                        children.scale.x -= 2;
+                        children.scale.y -= 2;
+                        children.scale.z -= 2;
+                    }
                 }
-            }
+                break;
         }
 
     },
@@ -386,8 +383,8 @@ const Scene = {
 
         window.addEventListener('resize', Scene.onWindowResize, false);
         window.addEventListener('mousemove', Scene.onMouseMove, false);
-
         window.addEventListener('keydown', Scene.animeKeydown, false);
+
         Scene.animate();
     }
 };
