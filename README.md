@@ -17,7 +17,8 @@ Commandes :
   - E pour rétrécir le bonhomme de paille ( rester appuyer )
   - Pointer vers le cavalier pour animer le dragon
   
-Les models ne sont pas de moi. J'ai voulu créer un texte en 3D mais l'import de certaines lettres était bugué. (Voir dossier screenshots)
+Les models ne sont pas de moi.
+Seul le texte AVENGERS est de moi, réaliser sous cinéma 4D.
 
 PS : J'ai rencontrer pas mal de soucis sur l'import des fichiers fbx. J'ai voulu modifier l'attitude des personnages dans cinéma4D, mais lors de l'import sur ma scene, ceux-ci était complétement bugué. Ex: De base, certains persos était en T-pose, j'ai voulu ramener les bras le long du corps, donc baisser de 90° les bras. Lors de l'import, je me retrouvais avec des bras dans des positions bizarre, style 140° avec tout les morceaux de bras dans toutes les directions.
 
