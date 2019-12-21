@@ -121,6 +121,8 @@ const Scene = {
             const action = mixer.clipAction(animation);
             action.play();
             vars.scene.add(model);
+            let elem = document.querySelector('#loading');
+            elem.parentNode.removeChild(elem);
         });
 
 
